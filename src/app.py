@@ -12,7 +12,6 @@ from PIL import Image
 
 from . import autostart, config, renderer, week
 
-VERSION = "1.0.0"
 
 
 def _seconds_until_midnight() -> float:
@@ -51,18 +50,6 @@ class TrayApp:
     # Menu actions
     # ------------------------------------------------------------------
 
-    def _on_about(self, icon: pystray.Icon, item: pystray.MenuItem) -> None:
-        import ctypes  # noqa: PLC0415
-        info = week.get_week(self._cfg["week_format"])
-        label = week.format_label(info, self._cfg["prefix"])
-        tooltip = week.format_tooltip(info, self._cfg["prefix"])
-        ctypes.windll.user32.MessageBoxW(
-            0,
-            f"{tooltip}\n\nWeeKTray v{VERSION}\ngithub.com/j-karlsson/weektray",
-            f"WeeKTray — {label}",
-            0x40,  # MB_ICONINFORMATION
-        )
-
     def _on_open_config(self, icon: pystray.Icon, item: pystray.MenuItem) -> None:
         config.open_in_editor()
 
@@ -92,8 +79,6 @@ class TrayApp:
             return autostart.is_enabled()
 
         return pystray.Menu(
-            pystray.MenuItem("About", self._on_about),
-            pystray.Menu.SEPARATOR,
             pystray.MenuItem("Open Config", self._on_open_config),
             pystray.MenuItem("Reload Config", self._on_reload_config),
             pystray.Menu.SEPARATOR,
