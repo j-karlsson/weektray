@@ -75,7 +75,7 @@ def render_icon(
     text_color: str = "#FFFFFF",
     bg_color: str = "#00000000",
     font_family: str = "Arial",
-    font_size: int = 10,
+    font_size: int = 40,
 ) -> Image.Image:
     """Render *label* onto a 32×32 RGBA image and return it."""
     bg_rgba = _parse_color(bg_color)

@@ -53,7 +53,7 @@ On first run with *Open Config*, a `config.json` is created automatically.
 ```json
 {
     "week_format": "ISO",
-    "prefix": "KW",
+    "prefix": "W",
     "font_family": "Segoe UI",
     "font_size": 9,
     "text_color": "#00FF99",
@@ -87,7 +87,7 @@ On first run with *Open Config*, a `config.json` is created automatically.
 ### Steps
 
 ```bash
-git clone https://github.com/your-org/weektray.git
+git clone https://github.com/j-karlsson/weektray.git
 cd weektray
 
 # Create a virtual environment (recommended)

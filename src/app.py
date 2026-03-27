@@ -58,7 +58,7 @@ class TrayApp:
         tooltip = week.format_tooltip(info, self._cfg["prefix"])
         ctypes.windll.user32.MessageBoxW(
             0,
-            f"{tooltip}\n\nWeeKTray v{VERSION}\ngithub.com/your-org/weektray",
+            f"{tooltip}\n\nWeeKTray v{VERSION}\ngithub.com/j-karlsson/weektray",
             f"WeeKTray — {label}",
             0x40,  # MB_ICONINFORMATION
         )

@@ -13,9 +13,9 @@ from typing import Any
 
 DEFAULTS: dict[str, Any] = {
     "week_format": "ISO",       # "ISO" | "US"
-    "prefix": "W",              # e.g. "W", "KW", "" — displayed as "{prefix}{week}"
+    "prefix": "",              # e.g. "W", "KW", "" — displayed as "{prefix}{week}"
     "font_family": "Arial",     # Windows font name
-    "font_size": 10,            # point size; renderer auto-shrinks if needed
+    "font_size": 40,            # point size; renderer auto-shrinks if needed
     "text_color": "#FFFFFF",    # hex RGB
     "bg_color": "#00000000",    # hex RGBA (transparent by default)
     "autostart": False,         # managed via tray menu; written back here
