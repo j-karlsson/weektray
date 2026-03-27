@@ -1,6 +1,6 @@
 """Entry point for WeeKTray.
 
-Enforces a single-instance guard via a Windows named mutex, then launches TrayApp.
+Enforces a single-instance guard via a bound localhost socket, then launches TrayApp.
 
 Run from the repo root in any of these ways:
     python -m src          (recommended, development)
@@ -10,8 +10,30 @@ Run from the repo root in any of these ways:
 
 from __future__ import annotations
 
+import socket
 import sys
 from pathlib import Path
+
+# A fixed high port used solely as a single-instance lock.
+# If the port is already bound, another instance is running.
+_LOCK_PORT = 47835
+_lock_socket: socket.socket | None = None
+
+
+def _acquire_instance_lock() -> bool:
+    """Bind a localhost socket to act as a single-instance guard.
+
+    Returns True if this is the first instance, False if another is running.
+    Keeps the socket open for the lifetime of the process.
+    """
+    global _lock_socket  # noqa: PLW0603
+    try:
+        _lock_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        _lock_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
+        _lock_socket.bind(("127.0.0.1", _LOCK_PORT))
+        return True
+    except OSError:
+        return False  # Port already in use — another instance is running
 
 
 def _ensure_importable() -> None:
@@ -22,26 +44,9 @@ def _ensure_importable() -> None:
         sys.path.insert(0, repo_root)
 
 
-def _acquire_mutex() -> object | None:
-    """Create a named Windows mutex.
-
-    Returns the mutex handle (to keep it alive) or None on non-Windows.
-    If the mutex already exists, exits the process immediately.
-    """
-    try:
-        import ctypes  # noqa: PLC0415
-
-        handle = ctypes.windll.kernel32.CreateMutexW(None, True, "Global\\WeeKTray_SingleInstance")
-        last_error = ctypes.windll.kernel32.GetLastError()
-        if last_error == 183:  # ERROR_ALREADY_EXISTS
-            sys.exit(0)
-        return handle
-    except (AttributeError, OSError):
-        return None  # Non-Windows dev environment
-
-
 def main() -> None:
-    mutex = _acquire_mutex()  # keep reference alive for process lifetime
+    if not _acquire_instance_lock():
+        sys.exit(0)
 
     try:
         from .app import TrayApp  # package mode: python -m src
@@ -52,8 +57,7 @@ def main() -> None:
     app = TrayApp()
     app.run()
 
-    del mutex  # released on exit
-
 
 if __name__ == "__main__":
     main()
+
