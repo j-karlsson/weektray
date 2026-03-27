@@ -1,0 +1,11 @@
+{
+    "_comment": "Copy this file to config.json and adjust to your preference. All fields are optional — missing keys fall back to these defaults.",
+    "week_format": "ISO",
+    "prefix": "",
+    "font_family": "Arial",
+    "font_size": 40,
+    "text_color": "#FFFFFF",
+    "bg_color": "#00000000",
+    "autostart": false,
+    "refresh_interval_s": 60
+}

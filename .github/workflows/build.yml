@@ -1,0 +1,52 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build executable
+        run: pyinstaller weektray.spec
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WeeKTray-windows
+          path: dist/WeeKTray.exe
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/WeeKTray.exe
+          body: |
+            ## WeeKTray ${{ github.ref_name }}
+
+            ### Installation
+            1. Download `WeeKTray.exe` below.
+            2. Run it — a week-number icon appears in the system tray.
+            3. Right-click the icon → **Autostart: Off** to enable autostart.
+            4. Right-click → **Open Config** to customise prefix, font, colors, and week standard.
+
+            See [README](https://github.com/${{ github.repository }}/blob/main/README.md) for full documentation.
